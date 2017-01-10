@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import requests
 from django.utils import timezone
 import json
+import datetime
 
 def billing(request):
 	if request.method=='GET':
@@ -122,14 +123,22 @@ def billing(request):
 		response_data['firm_name']=firm_name
 		
 		if from_time==None:
-			print 'No From Time'
+			from_time=datetime.date.today()
+			response_data['from_time']=from_time
+			print from_time
 		else:
 			response_data['from_time']=from_time
+
+
 		
 		if to_time==None:
-			print 'No to time'
+			to_time=datetime.date.today() + datetime.timedelta(days=1)
+			response_data['to_time']=to_time
 		else:
 			response_data['to_time']=to_time
+
+		if firm_name==None:
+			response_data['firm_name']=''
 
 		if balance<0:
 			response_data['balance_credit']=balance
