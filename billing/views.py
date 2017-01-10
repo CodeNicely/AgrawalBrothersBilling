@@ -129,8 +129,6 @@ def billing(request):
 		else:
 			response_data['from_time']=from_time
 
-
-		
 		if to_time==None:
 			to_time=datetime.date.today() + datetime.timedelta(days=1)
 			response_data['to_time']=to_time
