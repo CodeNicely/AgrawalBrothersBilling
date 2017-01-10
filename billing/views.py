@@ -13,7 +13,19 @@ def billing(request):
 		firm_name=request.GET.get('firm_name')
 		from_time=request.GET.get('from_time')
 		to_time=request.GET.get('to_time')
-		print 'FirmName:',firm_name
+
+		if firm_name=='':
+			firm_name=None
+
+		if from_time==None:
+			from_time=datetime.date.today()
+			print from_time
+	
+
+		if to_time==None:
+			to_time=datetime.date.today() + datetime.timedelta(days=1)
+	
+
 			# firm_name=''
 		response_data={}
 		total_sell=0
@@ -24,11 +36,14 @@ def billing(request):
 		for o in firm_list:
 			firmlist+='<option value="'+o[0]+'">'
 
+		print 'FirmNameHere',firm_name
+		print from_time
+		print to_time
 
 		if firm_name==None:
-			orders_list=order_data.objects.filter(order_type='PURCHASE')
+			orders_list=order_data.objects.filter(order_type='PURCHASE',created__range=[str(from_time),str(to_time)])
 		else:
-			orders_list=order_data.objects.filter(order_type='PURCHASE',firm_name=firm_name)
+			orders_list=order_data.objects.filter(order_type='PURCHASE',firm_name=firm_name,created__range=[str(from_time),str(to_time)])
 
 		orders_list_purchase=''
 		i=1
@@ -45,9 +60,9 @@ def billing(request):
 			total_purchase+=o.product_total
 
 		if firm_name==None:
-			orders_list=order_data.objects.filter(order_type='SELL')
+			orders_list=order_data.objects.filter(order_type='SELL',created__range=[str(from_time),str(to_time)])
 		else:
-			orders_list=order_data.objects.filter(order_type='SELL',firm_name=firm_name)
+			orders_list=order_data.objects.filter(order_type='SELL',firm_name=firm_name,created__range=[str(from_time),str(to_time)])
 
 		orders_list_sell=''
 		i=1
@@ -75,9 +90,9 @@ def billing(request):
 		total_debit=0
 
 		if firm_name==None:
-			payments_list=payment_data.objects.filter(payment_type='DEBIT')
+			payments_list=payment_data.objects.filter(payment_type='DEBIT',created__range=[str(from_time),str(to_time)])
 		else:
-			payments_list=payment_data.objects.filter(payment_type='DEBIT',firm_name=firm_name)
+			payments_list=payment_data.objects.filter(payment_type='DEBIT',firm_name=firm_name,created__range=[str(from_time),str(to_time)])
 
 		payment_list_debit=''
 		i=1
@@ -92,9 +107,9 @@ def billing(request):
 			total_debit+=o.amount
 
 		if firm_name==None:
-			payments_list=payment_data.objects.filter(payment_type='CREDIT')
+			payments_list=payment_data.objects.filter(payment_type='CREDIT',created__range=[str(from_time),str(to_time)])
 		else:
-			payments_list=payment_data.objects.filter(payment_type='CREDIT',firm_name=firm_name)
+			payments_list=payment_data.objects.filter(payment_type='CREDIT',firm_name=firm_name,created__range=[str(from_time),str(to_time)])
 
 		payment_list_credit=''
 		i=1
@@ -120,23 +135,14 @@ def billing(request):
 		response_data['total_credit']=total_credit
 		response_data['total_debit']=total_debit
 		response_data['firmlist']=firmlist
-		response_data['firm_name']=firm_name
+		response_data['from_time']=from_time
+		response_data['to_time']=to_time
 		
-		if from_time==None:
-			from_time=datetime.date.today()
-			response_data['from_time']=from_time
-			print from_time
-		else:
-			response_data['from_time']=from_time
-
-		if to_time==None:
-			to_time=datetime.date.today() + datetime.timedelta(days=1)
-			response_data['to_time']=to_time
-		else:
-			response_data['to_time']=to_time
 
 		if firm_name==None:
 			response_data['firm_name']=''
+		else:
+			response_data['firm_name']=firm_name
 
 		if balance<0:
 			response_data['balance_credit']=balance
