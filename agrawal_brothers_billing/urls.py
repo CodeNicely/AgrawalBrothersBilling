@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from orders.views import orders
+from orders.views import orders,register
 from payment.views import payment
 from billing.views import billing
 
@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^orders/', orders),
     url(r'^payments/', payment),
     url(r'^billing/', billing),
-
+    url(r'^register/', register),
 
 ]
 

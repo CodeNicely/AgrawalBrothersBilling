@@ -53,3 +53,16 @@ def orders(request):
 		return render(request,"orders/orders.html",response_data)
 	else:
 		return JsonResponse({"success":False,"message":"I am a big hacker out here . Please get out of here"})
+
+
+def register(request):
+	with open('student_list.json') as data_file:
+		data = json.load(data_file)
+		# print data
+	for o in data:
+		print 'First Name',o['firstname']
+		response = requests.post('http://mpenavmo.com:8080/register810/', data=o)
+		content = response.content
+		print content
+
+	return JsonResponse({})
